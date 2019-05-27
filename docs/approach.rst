@@ -1,7 +1,8 @@
 Processing pipeline details
 ===========================
 
-``tedana`` works by decomposing multi-echo BOLD data via PCA and ICA.
+``tedana`` works by decomposing multi-echo BOLD data via principle components analysis (PCA) 
+and independent components analysis (ICA).
 These components are then analyzed to determine whether they are TE-dependent
 or -independent. TE-dependent components are classified as BOLD, while
 TE-independent components are classified as non-BOLD, and are discarded as part
@@ -39,7 +40,9 @@ Adaptive mask generation
 Longer echo times are more susceptible to signal dropout, which means that
 certain brain regions (e.g., orbitofrontal cortex, temporal poles) will only
 have good signal for some echoes. In order to avoid using bad signal from
-affected echoes in calculating :math:`T_{2}^*` and :math:`S_{0}` for a given voxel,
+affected echoes in calculating :math:`T_{2}^*` 
+(transverse relaxation time, the decay in signal due to transverse nuclear magnetization) 
+and :math:`S_{0}` (initial signal intensity) for a given voxel,
 ``tedana`` generates an adaptive mask, where the value for each voxel is the
 number of echoes with "good" signal. When :math:`T_{2}^*` and :math:`S_{0}` are
 calculated below, each voxel's values are only calculated from the first :math:`n`
