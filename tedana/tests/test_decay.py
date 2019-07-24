@@ -63,9 +63,7 @@ def test_smoke_fit_decay():
     test_smoke_fit_decay tests that the function fit_decay returns reasonable 
     objects with random inputs in the correct format 
     """
-    n_samples = 100
-    n_echos = 5
-    n_times = 20
+    n_samples, n_echos, n_times = 100, 5, 20
     data = np.random.random((n_samples, n_echos, n_times))
     tes = np.random.random((n_echos)).tolist()
     mask = np.random.randint(2, size=n_samples) # generate binary mask of random 0s and 1s
@@ -87,9 +85,7 @@ def test_smoke_fit_decay_ts():
     test_smoke_fit_decay_ts tests that the function fit_decay_ts returns reasonable 
     objects with random inputs in the correct format 
     """
-    n_samples = 100
-    n_echos = 5
-    n_times = 20
+    n_samples, n_echos, n_times = 100, 5, 20
     data = np.random.random((n_samples, n_echos, n_times))
     tes = np.random.random((n_echos)).tolist()
     mask = np.random.randint(2, size=n_samples) # generate binary mask of random 0s and 1s
