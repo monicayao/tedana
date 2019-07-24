@@ -5,6 +5,7 @@ Tests for tedana.io
 import nibabel as nib
 import numpy as np
 import pytest
+import pandas as pd
 
 from tedana import io as me
 from tedana.tests.test_utils import fnames, tes
@@ -46,3 +47,73 @@ def test_load_data():
 
     with pytest.raises(ValueError):
         me.load_data(fnames[0])
+
+
+# SMOKE TESTS
+
+def test_smoke_split_ts():
+    """
+    Note: classification is ["accepted", "rejected", "ignored"]
+    """
+    n_samples = 100 
+    n_times = 20
+    n_components = 6
+    data = np.random.random((n_samples, n_times))
+    mmix = np.random.random((n_times, n_components))
+    mask = np.random.randint(2, size=n_samples)
+    
+    # creating the component table with component as random floats and random classification
+    components = np.random.random((n_components))
+    classification = np.random.choice(["accepted", "rejected", "ignored"], n_components)
+    df_data = np.column_stack((components, classification))
+    comptable = pd.DataFrame(df_data, columns=['component', 'classification'])
+
+    hikts, resid = me.split_ts(data, mmix, mask, comptable)
+
+    assert hikts is not None
+    assert resid is not None
+
+
+def test_smoke_write_split_ts(): # TODO because of the ref_img
+    """ can't do it with the img """ 
+    n_samples, n_times, n_components = 100, 20, 6
+    data = np.random.random((n_samples, n_times))
+    mmix = np.random.random((n_times, n_components))
+    mask = np.random.randint(2, size=n_samples)
+    ref_img = ''
+
+    # creating the component table with component as random floats and random classification
+    components = np.random.random((n_components))
+    classification = np.random.choice(["accepted", "rejected", "ignored"], n_components)
+    df_data = np.column_stack((components, classification))
+    comptable = pd.DataFrame(df_data, columns=['component', 'classification'])
+
+    assert me.write_split_ts(data, mmix, mask, comptable, ref_img) is not None
+
+
+def test_smoke_writefeats():
+    return
+
+
+def test_smoke_writeresults():
+    return 
+
+
+def test_smoke_new_nii_like():
+    return
+
+
+def test_smoke_filewrite():
+    return
+
+
+def test_smoke_load_data():
+    """ problem with check_niimg(data) """
+    data = np.random.random((100, 20, 10, 5)) # randomly shaped ME array
+    n_echos = 10
+
+    fdata, ref_img = me.load_data(data, n_echos)
+    assert fdata is not None
+    assert ref_img is not None
+
+# TODO: "BREAK" AND UNIT TESTS

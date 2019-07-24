@@ -40,3 +40,6 @@ def test_break_gscontrol_raw():
     assert str(e_info.value) == ('Third dimension of catd ({0}) does not match '
                                  'second dimension of optcom '
                                  '({1})'.format(catd.shape[2], optcom.shape[1]))
+
+
+# SMOKE TEST
