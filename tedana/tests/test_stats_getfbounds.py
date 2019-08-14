@@ -19,6 +19,9 @@ def test_getfbounds():
 # SMOKE TEST 
 
 def test_smoke_getfbounds():
+    """ 
+    Ensures that getfbounds returns outputs when fed in a random number of echos
+    """
     n_echos = random.randint(3, 10) # At least two echos!
     f05, f025, f01 = getfbounds(n_echos)
     

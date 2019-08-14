@@ -54,6 +54,9 @@ def test_break_computefeats2():
 # SMOKE TEST
 
 def test_smoke_computefeats2():
+    """
+    Ensures that computefeats2 works with random inputs and different optional parameters
+    """
     n_samples, n_times, n_components = 100, 20, 6
     data = np.random.random((n_samples, n_times))
     mmix = np.random.random((n_times, n_components))  
