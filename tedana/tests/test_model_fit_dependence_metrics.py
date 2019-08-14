@@ -95,3 +95,21 @@ def test_break_dependence_metrics():
     assert str(e_info.value) == ('Number of volumes in catd ({0}) '
                                  'does not match number of volumes in '
                                  't2s ({1})'.format(catd.shape[2], t2s.shape[1]))
+
+
+def test_smoke_dependence_metrics():
+    n_samples, n_times, n_echos, n_components = 64350, 10, 1, 6
+    catd = np.random.random((n_samples, n_echos, n_times))
+    tsoc = np.random.random((n_samples, n_times))
+    mmix = np.random.random((n_times, n_components))
+
+    t2s = np.random.random((n_samples))
+    tes = np.random.random((n_echos)).tolist()
+    ref_img = "data/mask.nii.gz" 
+    
+    comptable, seldict, betas, mmix_new = kundu_fit.dependence_metrics(catd, tsoc, mmix, t2s, tes, ref_img, algorithm="kundu_v2")
+
+    assert comptable is not None
+    assert seldict is not None 
+    assert betas is not None
+    assert mmix_new is not None

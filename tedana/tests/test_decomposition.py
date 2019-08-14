@@ -40,7 +40,7 @@ def test_smoke_run_mlepca():
 
 
 def test_smoke_low_mem_pca():
-    n_samples, n_echos, n_times = 100, 5, 20
+    n_samples, n_times = 100, 20
     data_2d = np.random.random((n_samples, n_times))
     #data_3d = np.random.random((n_samples, n_echos, n_times))  
 
@@ -48,4 +48,22 @@ def test_smoke_low_mem_pca():
 
     assert all(v is not None for v in [u_2d, s_2d, v_2d])
 
-# TODO: def test_smoke_tedpca(): <---- this requires ref_img
+def test_smoke_tedpca(): 
+    n_samples, n_times, n_echos = 64350, 10, 1
+    data_cat = np.random.random((n_samples, n_echos, n_times))
+    data_oc = np.random.random((n_samples, n_times))
+
+    mask = np.random.randint(2, size=n_samples)
+    t2s = np.random.random((n_samples))
+    t2sG = np.random.random((n_samples))
+
+    ref_img = "data/mask.nii.gz" 
+
+    tes = np.random.random((n_echos)).tolist()
+
+    kept_data, n_components = decomposition.tedpca(data_cat, data_oc, "t2s", mask, t2s, t2sG,
+           ref_img, tes)
+
+    assert kept_data is not None 
+    assert n_components is not None 
+    # TODO: change the mode and algo and make sure it still works 

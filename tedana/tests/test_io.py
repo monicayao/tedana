@@ -10,6 +10,8 @@ import pandas as pd
 from tedana import io as me
 from tedana.tests.test_utils import fnames, tes
 
+import os 
+
 
 def test_new_nii_like():
     data, ref = me.load_data(fnames, n_echos=len(tes))
@@ -55,6 +57,7 @@ def test_smoke_split_ts():
     """
     Note: classification is ["accepted", "rejected", "ignored"]
     """
+    np.random.seed(0) # seeded because comptable MUST have accepted components
     n_samples = 100 
     n_times = 20
     n_components = 6
@@ -62,11 +65,12 @@ def test_smoke_split_ts():
     mmix = np.random.random((n_times, n_components))
     mask = np.random.randint(2, size=n_samples)
     
-    # creating the component table with component as random floats and random classification
-    components = np.random.random((n_components))
+    # creating the component table with component as random floats, a "metric," and random classification
+    component = np.random.random((n_components))
+    metric = np.random.random((n_components))
     classification = np.random.choice(["accepted", "rejected", "ignored"], n_components)
-    df_data = np.column_stack((components, classification))
-    comptable = pd.DataFrame(df_data, columns=['component', 'classification'])
+    df_data = np.column_stack((component, metric, classification))
+    comptable = pd.DataFrame(df_data, columns=['component', 'metric', 'classification'])
 
     hikts, resid = me.split_ts(data, mmix, mask, comptable)
 
@@ -74,43 +78,57 @@ def test_smoke_split_ts():
     assert resid is not None
 
 
-def test_smoke_write_split_ts(): # TODO because of the ref_img
+def test_smoke_write_split_ts(): 
     """ can't do it with the img """ 
-    n_samples, n_times, n_components = 100, 20, 6
+    n_samples, n_times, n_components = 64350, 10, 6
     data = np.random.random((n_samples, n_times))
     mmix = np.random.random((n_times, n_components))
     mask = np.random.randint(2, size=n_samples)
-    ref_img = ''
+    ref_img = "data/mask.nii.gz"  # ref_img has shape of (39, 50, 33) so data is 64350 (39*33*50) x 10
 
-    # creating the component table with component as random floats and random classification
-    components = np.random.random((n_components))
+    # creating the component table with component as random floats, a "metric," and random classification
+    component = np.random.random((n_components))
+    metric = np.random.random((n_components))
     classification = np.random.choice(["accepted", "rejected", "ignored"], n_components)
-    df_data = np.column_stack((components, classification))
-    comptable = pd.DataFrame(df_data, columns=['component', 'classification'])
+    df_data = np.column_stack((component, metric, classification))
+    comptable = pd.DataFrame(df_data, columns=['component', 'metric', 'classification'])
 
     assert me.write_split_ts(data, mmix, mask, comptable, ref_img) is not None
+    # TODO: remove files 
 
 
 def test_smoke_writefeats():
-    return
+    n_samples, n_times, n_components = 64350, 10, 6
+    data = np.random.random((n_samples, n_times))
+    mmix = np.random.random((n_times, n_components))
+    mask = np.random.randint(2, size=n_samples)
+    ref_img = "data/mask.nii.gz"
+
+    assert me.writefeats(data, mmix, mask, ref_img) is not None
+    # TODO: remove files 
+
+# def test_smoke_writeresults(): TODO: How to test if they do not give an output?
+#     me.writeresults(ts, mask, comptable, mmix, n_vols, ref_img) 
 
 
-def test_smoke_writeresults():
-    return 
-
-
-def test_smoke_new_nii_like():
-    return
+# def test_smoke_new_nii_like():
+#     return
 
 
 def test_smoke_filewrite():
-    return
+    n_samples, n_times, n_components = 64350, 10, 6
+    data_1d = np.random.random((n_samples))
+    data_2d = np.random.random((n_samples, n_times))
+    filename = ""
+    ref_img = 'data/mask.nii.gz'
+    assert me.filewrite(data_1d, filename, ref_img) is not None
+    assert me.filewrite(data_2d, filename, ref_img) is not None
 
 
 def test_smoke_load_data():
     """ problem with check_niimg(data) """
-    data = np.random.random((100, 20, 10, 5)) # randomly shaped ME array
-    n_echos = 10
+    data = "data/mask.nii.gz"
+    n_echos = 1
 
     fdata, ref_img = me.load_data(data, n_echos)
     assert fdata is not None

@@ -43,3 +43,15 @@ def test_break_gscontrol_raw():
 
 
 # SMOKE TEST
+
+def test_smoke_gscontrol_raw():
+    n_samples, n_times, n_echos = 64350, 10, 1
+    catd = np.random.random((n_samples, n_echos, n_times))
+    optcom = np.random.random((n_samples, n_times))
+    ref_img = "data/mask.nii.gz" 
+
+    assert gsc.gscontrol_raw(catd, optcom, n_echos, ref_img)
+
+
+# def test_smoke_gscontrol_mmix(): test without no return value  
+#   return 
